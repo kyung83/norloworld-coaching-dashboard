@@ -166,9 +166,12 @@ export default function FilteredTable() {
           </button>
         </div>
       </div>
-      <div className="my-4 flex">
-        {newfilters["Driver Name"].map((text, i) => <Badge key={text} text={text} onClick={() => removeItem(i, "Driver Name")} />)}
-        {newfilters["TYPE"].map((text, i) => <Badge key={text} text={text} onClick={() => removeItem(i, "TYPE")} />)}
+      <div className="my-4 flex justify-between px-2">
+        <div className="flex">
+          {newfilters["Driver Name"].map((text, i) => <Badge key={text} text={text} onClick={() => removeItem(i, "Driver Name")} />)}
+          {newfilters["TYPE"].map((text, i) => <Badge key={text} text={text} onClick={() => removeItem(i, "TYPE")} />)}
+        </div>
+        <div className='m-1'>Total: {filteredData.length}</div>
       </div>
       <div className="mt-8 flow-root">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
