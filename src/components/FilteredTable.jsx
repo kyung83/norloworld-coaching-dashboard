@@ -49,8 +49,6 @@ export default function FilteredTable() {
   const [filters, setFilters] = useState({
     "Driver Name": '',
     "TYPE": '',
-    startDate: "",
-    endDate: ""
   });
 
   const [newfilters, setnewFilters] = useState({
@@ -62,32 +60,33 @@ export default function FilteredTable() {
 
   const handleFilterChange = (e, selector) => {
     if (selector === "startDate" || selector === "endDate")
-      return setFilters(prev => ({ ...prev, [selector]: e }))
+      return setnewFilters(prev => ({ ...prev, [selector]: e }))
     const { name } = e
-    setFilters(prev => ({ ...prev, [selector]: name }))
-    setnewFilters(prev => ({ ...prev, [selector]: [...prev[selector], name] }))
+    setFilters(prev => ({ ...prev, [selector]: name.trim() }))
+    setnewFilters(prev => ({ ...prev, [selector]: [...prev[selector], name.trim()] }))
   }
 
   const applyFilters = (e) => {
-    e.preventDefault()
+    e && e.preventDefault()
     if (data) {
       const sortedFilteredData = data.filter(item => 
-          (filters['Driver Name'] ? item['Driver Name']=== filters['Driver Name'] : true) &&
-          (filters['TYPE'] ? item['TYPE'] === filters['TYPE'] : true) &&
-          ((filters.startDate && filters.endDate) ? isWithinRange(item["Date Time"], filters.startDate, filters.endDate) : true) // &&
+          (newfilters['Driver Name'].length ? newfilters['Driver Name'].includes(item['Driver Name']) : true) &&
+          (newfilters['TYPE'].length ?  newfilters['TYPE'].includes(item['TYPE']) : true) &&
+          ((newfilters.startDate && newfilters.endDate) ? isWithinRange(item["Date Time"], newfilters.startDate, newfilters.endDate) : true) // &&
         )
       setFilteredData(sortedFilteredData)
     }
   }
   
   const handleClear = () => {
-    setFilters(prevState => ({
+    setnewFilters(prevState => ({
       ...prevState,
-      "Driver Name": '',
-      "TYPE": '',
+      "Driver Name": [],
+      "TYPE": [],
       startDate: '',
       endDate: ''
     }))
+    setFilteredData(data)
   }
 
   const removeItem = (i, prop) => {
@@ -105,8 +104,7 @@ export default function FilteredTable() {
   
   let drivers = data && data.map((item, i) => ({ id: i, name: item['Driver Name'].trim() }))
   drivers = removeDuplicates(drivers)
-  console.log(drivers)
-  
+
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center sm:justify-between">
@@ -118,7 +116,7 @@ export default function FilteredTable() {
             <ComboBox
               title="By Drivers" 
               items={drivers}
-              selectedPerson={filters['Driver Name']?.name}
+              selectedPerson={filters['Driver Name']?.name || ""}
               setSelectedPerson={(e) => handleFilterChange(e, 'Driver Name')}
             />
             
@@ -129,7 +127,7 @@ export default function FilteredTable() {
                   items: typeone.items.map(item => ({ id: item , name: item }))
                 })
               )}
-              selectedPerson={filters['TYPE']?.name}
+              selectedPerson={filters['TYPE']?.name || ""}
               setSelectedPerson={(e) => handleFilterChange(e, 'TYPE')}
             />
 
@@ -138,7 +136,7 @@ export default function FilteredTable() {
               <input
                 className="h-9 m-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 border-none"
                 type="date" id="start" name="trip-start" 
-                value={filters.startDate} 
+                value={newfilters.startDate} 
                 min="2000-07-22" max={new Date()}
                 onChange={e => handleFilterChange(e.target.value, 'startDate')}/>
             </div>
@@ -146,7 +144,7 @@ export default function FilteredTable() {
               <label className="block text-sm font-medium leading-6 text-gray-900 mb-2" htmlFor="start">End date:</label>
               <input
                 className="h-9 m-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 border-none"
-                type="date" id="start" name="trip-start" value={filters.endDate} min="2000-0&-22" max={new Date()}
+                type="date" id="start" name="trip-start" value={newfilters.endDate} min="2000-0&-22" max={new Date()}
                 onChange={e => handleFilterChange(e.target.value, 'endDate')} />
             </div>
         </div>}
