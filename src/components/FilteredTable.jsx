@@ -53,22 +53,30 @@ export default function FilteredTable() {
     endDate: ""
   });
 
+  const [newfilters, setnewFilters] = useState({
+    "Driver Name": [],
+    "TYPE": [],
+    startDate: "",
+    endDate: ""
+  });
+
   const handleFilterChange = (e, selector) => {
     if (selector === "startDate" || selector === "endDate")
       return setFilters(prev => ({ ...prev, [selector]: e }))
     const { name } = e
     setFilters(prev => ({ ...prev, [selector]: name }))
+    setnewFilters(prev => ({ ...prev, [selector]: [...prev[selector], name] }))
   }
 
   const applyFilters = (e) => {
     e.preventDefault()
     if (data) {
-      setFilteredData(data.filter(item => 
-        (filters['Driver Name'] ? item['Driver Name']=== filters['Driver Name'] : true) &&
-        (filters['TYPE'] ? item['TYPE'] === filters['TYPE'] : true) &&
-        ((filters.startDate && filters.endDate) ? isWithinRange(item["Date Time"], filters.startDate, filters.endDate) : true) // &&
-        //(filters.brand ? item.brand === filters.brand : true)
-      ));
+      const sortedFilteredData = data.filter(item => 
+          (filters['Driver Name'] ? item['Driver Name']=== filters['Driver Name'] : true) &&
+          (filters['TYPE'] ? item['TYPE'] === filters['TYPE'] : true) &&
+          ((filters.startDate && filters.endDate) ? isWithinRange(item["Date Time"], filters.startDate, filters.endDate) : true) // &&
+        )
+      setFilteredData(sortedFilteredData)
     }
   }
   
@@ -80,6 +88,11 @@ export default function FilteredTable() {
       startDate: '',
       endDate: ''
     }))
+  }
+
+  const removeItem = (i, prop) => {
+    const arr = [...newfilters[prop].slice(0,i),...newfilters[prop].slice(i+1)]
+    setnewFilters(prev => ({ ...prev, [prop]: arr }))
   }
 
   useEffect(() => {
@@ -142,21 +155,22 @@ export default function FilteredTable() {
           <button
             type="button"
             onClick={applyFilters}
-            className="block h-9 rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mt-4 mr-4"
+            className="block h-9 w-32 rounded-md bg-[#125e4d] px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mt-4 mr-4"
           >
-            filter
+            Filter
           </button>
           <button
             type="button"
             onClick={handleClear}
-            className="block h-9 rounded-md bg-gray-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mt-4"
+            className="block h-9 w-32 rounded-md bg-gray-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mt-4"
           >
             Clear
           </button>
         </div>
       </div>
-      <div className="my-4">
-        <Badge />
+      <div className="my-4 flex">
+        {newfilters["Driver Name"].map((text, i) => <Badge key={text} text={text} onClick={() => removeItem(i, "Driver Name")} />)}
+        {newfilters["TYPE"].map((text, i) => <Badge key={text} text={text} onClick={() => removeItem(i, "TYPE")} />)}
       </div>
       <div className="mt-8 flow-root">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">

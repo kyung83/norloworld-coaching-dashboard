@@ -29,7 +29,7 @@ export default function App() {
   return (
     <>
       <div className="flex flex-col flex-1">
-        <Disclosure as="nav" className="border-b border-gray-200 bg-white">
+        <Disclosure as="nav" className="border-b border-gray-200 bg-white sm:mx-8">
           {({ open }) => (
             <>
               <div className="mx-auto px-4 sm:px-6 lg:px-8">
@@ -182,9 +182,8 @@ export default function App() {
             </>
           )}
         </Disclosure>
-
         <div className="py-4 flex flex-col flex-1">
-          <header className="mb-4">
+          <header className="mx-8 my-8">
             <div className="mx-auto px-4 sm:px-6 lg:px-8">
               <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900">Dashboard</h1>
             </div>
