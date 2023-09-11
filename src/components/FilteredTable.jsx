@@ -143,11 +143,13 @@ export default function FilteredTable() {
 
   let allHomeTerminal = removeDuplicates(homeTerminal);
 
+
+
   console.log(dataTypes);
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
-      <div className="sm:flex sm:items-center sm:justify-between">
+      <div className="flex flex-col items-start justify-start md:items-start lg:items-center lg:justify-around">
         {drivers && dataTypes && (
           <div className="sm:flex justify-between w-full">
             {/* <h1 className="text-base font-semibold leading-6 text-gray-900">Users</h1>
