@@ -21,6 +21,7 @@ const people = [
   // More people...
 ];
 
+
 const endPoint =
   "https://script.google.com/macros/s/AKfycbwTHoBwo4RKtAo1Gz3ad0e8ydwUI4TBACO1Wcqnu9FYu_SFHRTVeXJuPHSeRx9o6W_T/exec";
 
@@ -68,10 +69,13 @@ export default function FilteredTable() {
       return setnewFilters((prev) => ({ ...prev, [selector]: e }));
     const { name } = e;
     setFilters((prev) => ({ ...prev, [selector]: name.trim() }));
-    setnewFilters((prev) => ({
-      ...prev,
-      [selector]: [...prev[selector], name.trim()],
-    }));
+    setnewFilters((prev) => {
+      const existingValues = prev[selector];
+      if (!existingValues.includes(name.trim())) {
+        return { ...prev, [selector]: [...existingValues, name.trim()] };
+      }
+      return prev; 
+    });
   };
 
   const applyFilters = (e) => {
