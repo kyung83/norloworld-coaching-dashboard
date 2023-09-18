@@ -112,6 +112,7 @@ export default function FilteredTable() {
     setnewFilters((prevState) => ({
       ...prevState,
       "Driver Name": [],
+      "Home Terminal": [],
       TYPE: [],
       startDate: "",
       endDate: "",
