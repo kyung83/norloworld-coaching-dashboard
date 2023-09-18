@@ -242,8 +242,9 @@ export default function FilteredTable() {
           </button>
         </div>
       </div>
-      <div className="my-4 flex justify-between px-2">
-        <div className="flex">
+
+      <div className="my-4 flex justify-between px-2 gap-2">
+        <div className="flex flex-wrap gap-2 place-content-center ">
           {newfilters["Driver Name"].map((text, i) => (
             <Badge
               key={text}
@@ -266,7 +267,7 @@ export default function FilteredTable() {
             />
           ))}
         </div>
-        <div className="m-1">Total: {filteredData.length}</div>
+        <p className="w-fit">Total: {filteredData.length}</p>
       </div>
       <div className="mt-8 flow-root">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
