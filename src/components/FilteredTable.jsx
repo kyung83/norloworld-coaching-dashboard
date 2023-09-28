@@ -8,6 +8,8 @@ import Badge from "./Badge";
 import ComboBoxGroup from "./ComboBoxGroup";
 import ComboBox from "./ComboBox";
 import Spinner from "./Spinner";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 dayjs.extend(isBetween);
 
@@ -185,44 +187,34 @@ export default function FilteredTable() {
               setSelectedPerson={(e) => handleFilterChange(e, "TYPE")}
             />
 
-            <div className="block">
-              <label
-                className="block text-sm font-medium leading-6 text-gray-900 mb-2"
-                htmlFor="start"
-              >
-                Start date:
-              </label>
-              <input
-                className="h-9 m-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 border-none"
-                type="date"
-                id="start"
-                name="trip-start"
-                value={newfilters.startDate}
-                min="2000-07-22"
-                max={new Date()}
-                onChange={(e) =>
-                  handleFilterChange(e.target.value, "startDate")
-                }
-              />
-            </div>
-            <div className="block">
-              <label
-                className="block text-sm font-medium leading-6 text-gray-900 mb-2"
-                htmlFor="start"
-              >
-                End date:
-              </label>
-              <input
-                className="h-9 m-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 border-none"
-                type="date"
-                id="start"
-                name="trip-start"
-                value={newfilters.endDate}
-                min="2000-0&-22"
-                max={new Date()}
-                onChange={(e) => handleFilterChange(e.target.value, "endDate")}
-              />
-            </div>
+<div className="block">
+  <label className="block text-sm font-medium leading-6 text-gray-900 mb-2" htmlFor="start">
+    Start date:
+  </label>
+  <DatePicker
+    selected={newfilters.startDate}
+    onChange={date => handleFilterChange(date, "startDate")}
+    isClearable={true} 
+    dateFormat="yyyy-MM-dd"
+    className="h-9 m-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 border-none"
+    placeholderText="Select a start date"
+  />
+</div>
+
+<div className="block">
+  <label className="block text-sm font-medium leading-6 text-gray-900 mb-2" htmlFor="end">
+    End date:
+  </label>
+  <DatePicker
+    selected={newfilters.endDate}
+    onChange={date => handleFilterChange(date, "endDate")}
+    isClearable={true}
+    dateFormat="yyyy-MM-dd"
+    className="h-9 m-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 border-none"
+    placeholderText="Select an end date"
+  />
+</div>
+
           </div>
         )}
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex">
