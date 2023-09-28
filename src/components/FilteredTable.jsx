@@ -55,13 +55,13 @@ export default function FilteredTable() {
   const [filters, setFilters] = useState({
     "Driver Name": "",
     "Home Terminal": "",
-    TYPE: "",
+    "Type ": "",
   });
 
   const [newfilters, setnewFilters] = useState({
     "Driver Name": [],
     "Home Terminal": [],
-    TYPE: [],
+    Type : [],
     startDate: "",
     endDate: "",
   });
@@ -95,8 +95,8 @@ export default function FilteredTable() {
                 .map((name) => name.toLowerCase())
                 .includes(item["Home Terminal"].toLowerCase())
             : true) &&
-          (newfilters["TYPE"].length
-            ? newfilters["TYPE"].includes(item["TYPE"])
+          (newfilters["Type"].length
+            ? newfilters["Type"].includes(item["Type "])
             : true) &&
           (newfilters.startDate && newfilters.endDate
             ? isWithinRange(
@@ -115,7 +115,7 @@ export default function FilteredTable() {
       ...prevState,
       "Driver Name": [],
       "Home Terminal": [],
-      TYPE: [],
+      Type: [],
       startDate: "",
       endDate: "",
     }));
@@ -152,7 +152,7 @@ export default function FilteredTable() {
 
 
 
-  console.log(dataTypes);
+  console.log(filteredData);
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -183,8 +183,8 @@ export default function FilteredTable() {
                 ...typeone,
                 items: typeone.items.map((item) => ({ id: item, name: item })),
               }))}
-              selectedPerson={filters["TYPE"]?.name || ""}
-              setSelectedPerson={(e) => handleFilterChange(e, "TYPE")}
+              selectedPerson={filters["Type"]?.name || ""}
+              setSelectedPerson={(e) => handleFilterChange(e, "Type")}
             />
 
 <div className="block">
@@ -252,11 +252,11 @@ export default function FilteredTable() {
               onClick={() => removeItem(i, "Home Terminal")}
             />
           ))}
-          {newfilters["TYPE"].map((text, i) => (
+          {newfilters["Type"].map((text, i) => (
             <Badge
               key={text}
               text={text}
-              onClick={() => removeItem(i, "TYPE")}
+              onClick={() => removeItem(i, "Type")}
             />
           ))}
         </div>
@@ -336,7 +336,7 @@ export default function FilteredTable() {
                         {person["Documented By"]}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500">
-                        {person["TYPE"]}
+                        {person["Type "]}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500">
                         {person["ATTACHMENT"] &&
