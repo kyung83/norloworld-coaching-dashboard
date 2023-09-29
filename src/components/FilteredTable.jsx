@@ -27,12 +27,14 @@ const people = [
 const endPoint =
   "https://script.google.com/macros/s/AKfycbwTHoBwo4RKtAo1Gz3ad0e8ydwUI4TBACO1Wcqnu9FYu_SFHRTVeXJuPHSeRx9o6W_T/exec";
 
-const isWithinRange = (fixedDate, startDate, endDate) => {
-  const start = dayjs(startDate);
-  const end = dayjs(endDate);
-  const dateToCheck = dayjs(fixedDate);
-  return dateToCheck.isBetween(start, end, null, "[]"); // '[]' indica que es inclusivo de ambas fechas
-};
+  const isWithinRange = (fixedDate, startDate, endDate) => {
+    const start = dayjs(startDate).startOf('day');
+    const end = dayjs(endDate).add(1, 'day').startOf('day');  // Añade un día y ajusta al inicio del día
+    const dateToCheck = dayjs(fixedDate).startOf('day');
+    return dateToCheck.isBetween(start, end, null, "[)");  // Nota el cambio a "[)" para incluir el inicio pero no el final
+  };
+  
+  
 
 function removeDuplicates(data) {
   return data.reduce((accumulator, current) => {
