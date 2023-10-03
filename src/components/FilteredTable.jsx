@@ -56,13 +56,13 @@ export default function FilteredTable() {
 
   const [filters, setFilters] = useState({
     "Driver Name": "",
-    "Home Terminal": "",
-    "Type ": "",
+    "Terminal": "",
+    "Type": "",
   });
 
   const [newfilters, setnewFilters] = useState({
     "Driver Name": [],
-    "Home Terminal": [],
+    "Terminal": [],
     Type : [],
     startDate: "",
     endDate: "",
@@ -92,13 +92,13 @@ export default function FilteredTable() {
                 .map((name) => name.toLowerCase())
                 .includes(item["Driver Name"].toLowerCase())
             : true) &&
-          (newfilters["Home Terminal"].length
-            ? newfilters["Home Terminal"]
+          (newfilters["Terminal"].length
+            ? newfilters["Terminal"]
                 .map((name) => name.toLowerCase())
-                .includes(item["Home Terminal"].toLowerCase())
+                .includes(item["Terminal"].toLowerCase())
             : true) &&
           (newfilters["Type"].length
-            ? newfilters["Type"].includes(item["Type "])
+            ? newfilters["Type"].includes(item["Type"])
             : true) &&
           (newfilters.startDate && newfilters.endDate
             ? isWithinRange(
@@ -116,7 +116,7 @@ export default function FilteredTable() {
     setnewFilters((prevState) => ({
       ...prevState,
       "Driver Name": [],
-      "Home Terminal": [],
+      "Terminal": [],
       Type: [],
       startDate: "",
       endDate: "",
@@ -173,10 +173,10 @@ export default function FilteredTable() {
             />
 
             <ComboBox
-              title="By Home Terminal"
+              title="By Terminal"
               items={allHomeTerminal}
-              selectedPerson={filters["Home Terminal"]?.name || ""}
-              setSelectedPerson={(e) => handleFilterChange(e, "Home Terminal")}
+              selectedPerson={filters["Terminal"]?.name || ""}
+              setSelectedPerson={(e) => handleFilterChange(e, "Terminal")}
             />
 
             <ComboBoxGroup
@@ -247,11 +247,11 @@ export default function FilteredTable() {
               onClick={() => removeItem(i, "Driver Name")}
             />
           ))}
-          {newfilters["Home Terminal"].map((text, i) => (
+          {newfilters["Terminal"].map((text, i) => (
             <Badge
               key={text}
               text={text}
-              onClick={() => removeItem(i, "Home Terminal")}
+              onClick={() => removeItem(i, "Terminal")}
             />
           ))}
           {newfilters["Type"].map((text, i) => (
@@ -281,7 +281,7 @@ export default function FilteredTable() {
                       scope="col"
                       className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
                     >
-                      Home Terminal
+                      Terminal
                     </th>
                     <th
                       scope="col"
@@ -325,7 +325,7 @@ export default function FilteredTable() {
                         {person["Driver Name"]}
                       </td>
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                        {person["Home Terminal"]}
+                        {person["Terminal"]}
                       </td>
                       {/* <td className=" px-3 py-4 text-sm text-gray-500">{person['Driver Name']}</td> */}
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
@@ -338,7 +338,7 @@ export default function FilteredTable() {
                         {person["Documented By"]}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500">
-                        {person["Type "]}
+                        {person["Type"]}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500">
                         {person["ATTACHMENT"] &&
