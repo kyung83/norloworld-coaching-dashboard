@@ -27,14 +27,14 @@ const people = [
 const endPoint =
   "https://script.google.com/macros/s/AKfycbwTHoBwo4RKtAo1Gz3ad0e8ydwUI4TBACO1Wcqnu9FYu_SFHRTVeXJuPHSeRx9o6W_T/exec";
 
-  const isWithinRange = (fixedDate, startDate, endDate) => {
-    const start = dayjs(startDate).startOf('day');
-    const end = dayjs(endDate).add(1, 'day').startOf('day');  // Añade un día y ajusta al inicio del día
-    const dateToCheck = dayjs(fixedDate).startOf('day');
-    return dateToCheck.isBetween(start, end, null, "[)");  // Nota el cambio a "[)" para incluir el inicio pero no el final
-  };
-  
-  
+const isWithinRange = (fixedDate, startDate, endDate) => {
+  const start = dayjs(startDate).startOf('day');
+  const end = dayjs(endDate).add(1, 'day').startOf('day');  // Añade un día y ajusta al inicio del día
+  const dateToCheck = dayjs(fixedDate).startOf('day');
+  return dateToCheck.isBetween(start, end, null, "[)");  // Nota el cambio a "[)" para incluir el inicio pero no el final
+};
+
+
 
 function removeDuplicates(data) {
   return data.reduce((accumulator, current) => {
@@ -63,7 +63,7 @@ export default function FilteredTable() {
   const [newfilters, setnewFilters] = useState({
     "Driver Name": [],
     "Terminal": [],
-    Type : [],
+    Type: [],
     startDate: "",
     endDate: "",
   });
@@ -78,7 +78,7 @@ export default function FilteredTable() {
       if (!existingValues.includes(name.trim())) {
         return { ...prev, [selector]: [...existingValues, name.trim()] };
       }
-      return prev; 
+      return prev;
     });
   };
 
@@ -89,23 +89,23 @@ export default function FilteredTable() {
         (item) =>
           (newfilters["Driver Name"].length
             ? newfilters["Driver Name"]
-                .map((name) => name.toLowerCase())
-                .includes(item["Driver Name"].toLowerCase())
+              .map((name) => name.toLowerCase())
+              .includes(item["Driver Name"].toLowerCase())
             : true) &&
           (newfilters["Terminal"].length
             ? newfilters["Terminal"]
-                .map((name) => name.toLowerCase())
-                .includes(item["Terminal"].toLowerCase())
+              .map((name) => name.toLowerCase())
+              .includes(item["Terminal"].toLowerCase())
             : true) &&
           (newfilters["Type"].length
             ? newfilters["Type"].includes(item["Type"])
             : true) &&
           (newfilters.startDate && newfilters.endDate
             ? isWithinRange(
-                item["Date Time"],
-                newfilters.startDate,
-                newfilters.endDate
-              )
+              item["Date Time"],
+              newfilters.startDate,
+              newfilters.endDate
+            )
             : true) // &&
       );
       setFilteredData(sortedFilteredData);
@@ -189,33 +189,33 @@ export default function FilteredTable() {
               setSelectedPerson={(e) => handleFilterChange(e, "Type")}
             />
 
-<div className="block">
-  <label className="block text-sm font-medium leading-6 text-gray-900 mb-2" htmlFor="start">
-    Start date:
-  </label>
-  <DatePicker
-    selected={newfilters.startDate}
-    onChange={date => handleFilterChange(date, "startDate")}
-    isClearable={true} 
-    dateFormat="yyyy-MM-dd"
-    className="h-9 m-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 border-none"
-    placeholderText="Select a start date"
-  />
-</div>
+            <div className="block">
+              <label className="block text-sm font-medium leading-6 text-gray-900 mb-2" htmlFor="start">
+                Start date:
+              </label>
+              <DatePicker
+                selected={newfilters.startDate}
+                onChange={date => handleFilterChange(date, "startDate")}
+                isClearable={true}
+                dateFormat="yyyy-MM-dd"
+                className="h-9 m-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 border-none"
+                placeholderText="Select a start date"
+              />
+            </div>
 
-<div className="block">
-  <label className="block text-sm font-medium leading-6 text-gray-900 mb-2" htmlFor="end">
-    End date:
-  </label>
-  <DatePicker
-    selected={newfilters.endDate}
-    onChange={date => handleFilterChange(date, "endDate")}
-    isClearable={true}
-    dateFormat="yyyy-MM-dd"
-    className="h-9 m-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 border-none"
-    placeholderText="Select an end date"
-  />
-</div>
+            <div className="block">
+              <label className="block text-sm font-medium leading-6 text-gray-900 mb-2" htmlFor="end">
+                End date:
+              </label>
+              <DatePicker
+                selected={newfilters.endDate}
+                onChange={date => handleFilterChange(date, "endDate")}
+                isClearable={true}
+                dateFormat="yyyy-MM-dd"
+                className="h-9 m-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 border-none"
+                placeholderText="Select an end date"
+              />
+            </div>
 
           </div>
         )}
@@ -311,6 +311,24 @@ export default function FilteredTable() {
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
+                      AMOUNT $ TICKET OR DAMAGE
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    >
+                      CSA BASIC Category & Group Description
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    >
+                      CSA Points
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    >
                       Attachment
                     </th>
                     {/* <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
@@ -339,6 +357,15 @@ export default function FilteredTable() {
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500">
                         {person["Type"]}
+                      </td>
+                      <td className="px-3 py-4 text-sm text-gray-500">
+                        {person["AMOUNT $ TICKET OR DAMAGE"]}
+                      </td>
+                      <td className="px-3 py-4 text-sm text-gray-500">
+                        {person["CSA BASIC Category & Group Description"]}
+                      </td>
+                      <td className="px-3 py-4 text-sm text-gray-500">
+                        {person["CSA Points"]}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500">
                         {person["ATTACHMENT"] &&
