@@ -1,7 +1,9 @@
 import { Fragment } from 'react'
-import { FilteredTable } from "./components"
+import { FilteredTable, StatsTable } from "./components"
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { BrowserRouter as Router, Route, Link, Routes, HashRouter } from 'react-router-dom';
+
 
 const user = {
   name: 'Tom Cook',
@@ -10,10 +12,8 @@ const user = {
     'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
 }
 const navigation = [
-  { name: 'Incidents', href: '#', current: true },
-  { name: 'Team', href: '#', current: false },
-  { name: 'Projects', href: '#', current: false },
-  { name: 'Calendar', href: '#', current: false },
+  { name: 'Dashboard', href: '/', current: true },
+  { name: 'Stats', href: '/stats', current: false },
 ]
 const userNavigation = [
   { name: 'Your Profile', href: '#' },
@@ -25,14 +25,16 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
+
 export default function App() {
   return (
-    <>
-      <div className="flex flex-col flex-1">
-        <Disclosure as="nav" className="border-b border-gray-200 bg-white sm:mx-8">
-          {({ open }) => (
+    <HashRouter>
+
+        <div className="flex flex-col flex-1">
+      <Disclosure as="nav" className="border-b border-gray-200 bg-white">
+         {({ open }) => (
             <>
-              <div className="mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex h-16 justify-between">
                   <div className="flex">
                     <div className="flex flex-shrink-0 items-center">
@@ -49,9 +51,9 @@ export default function App() {
                     </div>
                     <div className="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
                       {navigation.map((item) => (
-                        <a
+                        <Link
                           key={item.name}
-                          href={item.href}
+                          to={item.href}
                           className={classNames(
                             item.current
                               ? 'border-indigo-500 text-gray-900'
@@ -61,7 +63,7 @@ export default function App() {
                           aria-current={item.current ? 'page' : undefined}
                         >
                           {item.name}
-                        </a>
+                        </Link>
                       ))}
                     </div>
                   </div>
@@ -97,15 +99,15 @@ export default function App() {
                           {userNavigation.map((item) => (
                             <Menu.Item key={item.name}>
                               {({ active }) => (
-                                <a
-                                  href={item.href}
+                                <Link
+                                  to={item.href}
                                   className={classNames(
                                     active ? 'bg-gray-100' : '',
                                     'block px-4 py-2 text-sm text-gray-700'
                                   )}
                                 >
                                   {item.name}
-                                </a>
+                                </Link>
                               )}
                             </Menu.Item>
                           ))}
@@ -132,19 +134,19 @@ export default function App() {
                 <div className="space-y-1 pb-3 pt-2">
                   {navigation.map((item) => (
                     <Disclosure.Button
-                      key={item.name}
-                      as="a"
-                      href={item.href}
-                      className={classNames(
+                    as={Link}
+                    key={item.name}
+                    to={item.href}
+                    className={classNames(
                         item.current
-                          ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                          : 'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800',
+                            ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
+                            : 'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800',
                         'block border-l-4 py-2 pl-3 pr-4 text-base font-medium'
-                      )}
-                      aria-current={item.current ? 'page' : undefined}
-                    >
-                      {item.name}
-                    </Disclosure.Button>
+                    )}
+                    aria-current={item.current ? 'page' : undefined}
+                >
+                    {item.name}
+                </Disclosure.Button>                
                   ))}
                 </div>
                 <div className="border-t border-gray-200 pb-3 pt-4">
@@ -168,13 +170,13 @@ export default function App() {
                   <div className="mt-3 space-y-1">
                     {userNavigation.map((item) => (
                       <Disclosure.Button
-                        key={item.name}
-                        as="a"
-                        href={item.href}
-                        className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800"
-                      >
-                        {item.name}
-                      </Disclosure.Button>
+                      key={item.name}
+                      as={Link}
+                      to={item.href}
+                      className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+                  >
+                      {item.name}
+                  </Disclosure.Button>                  
                     ))}
                   </div>
                 </div>
@@ -182,21 +184,24 @@ export default function App() {
             </>
           )}
         </Disclosure>
-        <div className="py-4 flex flex-col flex-1">
-          <header className="mx-8 my-8">
-            <div className="mx-auto px-4 sm:px-6 lg:px-8">
-              <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900">Dashboard</h1>
-            </div>
-          </header>
-          <main className="flex flex-col flex-1">
-            <div className="mx-auto px-4 sm:px-6 lg:px-8 flex flex-col flex-1 w-full">
-              {/* <MainForm /> */}
-              <FilteredTable />
-            </div>
-          </main>
+
+          <div className="py-4 flex flex-col flex-1">
+            <header className="mb-4">
+              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900">Coaching</h1>
+              </div>
+            </header>
+            <main className="flex flex-col flex-1">
+              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col flex-1 w-full">
+                <Routes>
+                  <Route path="/" exact element={<FilteredTable/>} />
+                  <Route path="/stats" element={<StatsTable/>} />
+                </Routes>
+              </div>
+            </main>
+          </div>
         </div>
-      </div>
-    </>
+    </HashRouter>
   )
 }
 
