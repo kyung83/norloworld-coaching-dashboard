@@ -169,9 +169,9 @@ export default function StatsTable() {
             title="Driver"
             items={
               data && data.driversStats
-                ? data.driversStats.map((month, i) => ({
+                ? data.driversStats.map((driverArray, i) => ({
                     id: i,
-                    name: month,
+                    name: driverArray[0],
                   }))
                 : []
             }
