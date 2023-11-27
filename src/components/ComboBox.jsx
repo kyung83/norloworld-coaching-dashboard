@@ -21,11 +21,11 @@ export default function ComboBox({
   const [query, setQuery] = useState("");
 
   const filteredPeople =
-    query === ""
+    query === ''
       ? items
       : items.filter((person) => {
-          return person.name.toLowerCase().includes(query.toLowerCase());
-        });
+          return person.name.toLowerCase().includes(query.toLowerCase())
+        })
 
   return (
     <Combobox

@@ -6,8 +6,11 @@ import Badge from "./Badge";
 import ComboBox from "./ComboBox";
 import Spinner from "./Spinner";
 import "react-datepicker/dist/react-datepicker.css";
+import { useNavigate } from "react-router-dom";
+import utcPlugin from "dayjs/plugin/utc";
 
 dayjs.extend(isBetween);
+dayjs.extend(utcPlugin);
 
 const endPoint =
   "https://script.google.com/macros/s/AKfycbwTHoBwo4RKtAo1Gz3ad0e8ydwUI4TBACO1Wcqnu9FYu_SFHRTVeXJuPHSeRx9o6W_T/exec";
@@ -33,9 +36,43 @@ export default function StatsTable() {
   const [filteredData, setFilteredData] = useState(null);
 
   const [selectedDriver, setSelectedDriver] = useState("");
-  const [selectedStartMonth, setSelectedStartMonth] = useState('');
+  const [selectedStartMonth, setSelectedStartMonth] = useState("");
   const [selectedEndMonth, setSelectedEndMonth] = useState("");
-  
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const navigate = useNavigate();
+
+  const redirectToDashboard = () => {
+    const monthNameMap = {
+      JANUARY: 0,
+      FEBRUARY: 1,
+      MARCH: 2,
+      APRIL: 3,
+      MAY: 4,
+      JUNE: 5,
+      JULY: 6,
+      AUGUST: 7,
+      SEPTEMBER: 8,
+      OCTOBER: 9,
+      NOVEMBER: 10,
+      DECEMBER: 11,
+    };
+
+    const startMonth = selectedStartMonth.name
+      ? dayjs().month(monthNameMap[selectedStartMonth.name]).startOf("month")
+      : dayjs().month(0).startOf("month");
+
+    const endMonth = selectedEndMonth.name
+      ? dayjs().month(monthNameMap[selectedEndMonth.name]).endOf("month")
+      : dayjs().month(11).endOf("month");
+
+    const startOfMonth = startMonth.utc().format("YYYY-MM-DDTHH:mm:ss[Z]");
+    const endOfMonth = endMonth.utc().format("YYYY-MM-DDTHH:mm:ss[Z]");
+
+    navigate(
+      `/?driver=${selectedDriver.name}&startMonth=${startOfMonth}&endMonth=${endOfMonth}`
+    );
+  };
 
   const handleFilterChange = (selectedValue, selector) => {
     switch (selector) {
@@ -66,6 +103,12 @@ export default function StatsTable() {
   };
 
   const applyFilters = () => {
+    if (!selectedDriver || !selectedDriver.name) {
+      setErrorMessage("You need to select a driver");
+      return;
+    } else {
+      setErrorMessage("");
+    }
     if (data && data.stats) {
       const filtered = {};
 
@@ -76,7 +119,15 @@ export default function StatsTable() {
       }
       const startMonth = filters["Start Month"] || { id: 0, name: "JANUARY" };
       const endMonth = filters["End Month"] || { id: 11, name: "DECEMBER" };
-      console.log(startMonth, endMonth)
+      if (!selectedStartMonth || !selectedStartMonth.name) {
+        setSelectedStartMonth(startMonth);
+      }
+
+      if (!selectedEndMonth || !selectedEndMonth.name) {
+        setSelectedEndMonth(endMonth);
+      }
+
+      console.log(startMonth, endMonth);
       const filteredMonths = filterByMonthRange(filtered, startMonth, endMonth);
       setFilteredData(filteredMonths);
     }
@@ -116,20 +167,19 @@ export default function StatsTable() {
     setFilters({
       "Driver Name": "",
       "Start Month": { id: 0, name: "JANUARY" },
-      "End Month": { id: 11, name: "DECEMBER" }
+      "End Month": { id: 11, name: "DECEMBER" },
     });
     setSelectedDriver("");
     setSelectedStartMonth("");
     setSelectedEndMonth("");
     setFilteredData(null);
-};
-
+  };
 
   const [filters, setFilters] = useState({
     "Driver Name": "",
     "Start Month": { id: 0, name: "JANUARY" },
     "End Month": { id: 11, name: "DECEMBER" },
- });
+  });
 
   if (loading) {
     return <Spinner />;
@@ -161,17 +211,31 @@ export default function StatsTable() {
     });
   }
 
+  console.log(data);
+
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="flex flex-col items-start justify-start md:items-start lg:items-center lg:justify-around">
         <div className="sm:flex justify-between w-full">
+          <button
+            onClick={redirectToDashboard}
+            className="flex items-center h-9 w-50 rounded-md bg-[#125e4d] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mt-4 mr-4 mb-4 sm:mb-4"
+          >
+            <i
+              className="fa fa-arrow-left text-2xl align-middle"
+              style={{ marginRight: "0.25rem" }}
+            ></i>
+            <span>Go to</span>
+            <span className="ml-1">Dashboard</span>
+          </button>
+
           <ComboBox
             title="Driver"
             items={
               data && data.driversStats
-                ? data.driversStats.map((month, i) => ({
+                ? data.driversStats.map((driverArray, i) => ({
                     id: i,
-                    name: month,
+                    name: driverArray[0],
                   }))
                 : []
             }
@@ -255,6 +319,11 @@ export default function StatsTable() {
         </table>
       ) : (
         <p className="mt-4 text-center text-gray-500">No data to display</p>
+      )}
+      {errorMessage && (
+        <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mt-4 rounded">
+          <p>{errorMessage}</p>
+        </div>
       )}
     </div>
   );

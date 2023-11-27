@@ -10,6 +10,7 @@ import ComboBox from "./ComboBox";
 import Spinner from "./Spinner";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useLocation } from "react-router-dom";
 
 dayjs.extend(isBetween);
 
@@ -23,18 +24,15 @@ const people = [
   // More people...
 ];
 
-
 const endPoint =
   "https://script.google.com/macros/s/AKfycbwTHoBwo4RKtAo1Gz3ad0e8ydwUI4TBACO1Wcqnu9FYu_SFHRTVeXJuPHSeRx9o6W_T/exec";
 
 const isWithinRange = (fixedDate, startDate, endDate) => {
-  const start = dayjs(startDate).startOf('day');
-  const end = dayjs(endDate).add(1, 'day').startOf('day');  // Añade un día y ajusta al inicio del día
-  const dateToCheck = dayjs(fixedDate).startOf('day');
-  return dateToCheck.isBetween(start, end, null, "[)");  // Nota el cambio a "[)" para incluir el inicio pero no el final
+  const start = dayjs(startDate).startOf("day");
+  const end = dayjs(endDate).add(1, "day").startOf("day"); // Añade un día y ajusta al inicio del día
+  const dateToCheck = dayjs(fixedDate).startOf("day");
+  return dateToCheck.isBetween(start, end, null, "[)"); // Nota el cambio a "[)" para incluir el inicio pero no el final
 };
-
-
 
 function removeDuplicates(data) {
   return data.reduce((accumulator, current) => {
@@ -53,16 +51,17 @@ export default function FilteredTable() {
     useAxios(endPoint + "?route=getIncidentTypes");
   const [{ data, loading, error }] = useAxios(endPoint + "?route=getIncidents");
   const [filteredData, setFilteredData] = useState([]);
+  const [LocationChanged, setLocationChanged] = useState(false);
 
   const [filters, setFilters] = useState({
     "Driver Name": "",
-    "Terminal": "",
-    "Type": "",
+    Terminal: "",
+    Type: "",
   });
 
   const [newfilters, setnewFilters] = useState({
     "Driver Name": [],
-    "Terminal": [],
+    Terminal: [],
     Type: [],
     startDate: "",
     endDate: "",
@@ -89,34 +88,73 @@ export default function FilteredTable() {
         (item) =>
           (newfilters["Driver Name"].length
             ? newfilters["Driver Name"]
-              .map((name) => name.toLowerCase())
-              .includes(item["Driver Name"].toLowerCase())
+                .map((name) => name.toLowerCase())
+                .includes(item["Driver Name"].toLowerCase())
             : true) &&
           (newfilters["Terminal"].length
             ? newfilters["Terminal"]
-              .map((name) => name.toLowerCase())
-              .includes(item["Terminal"].toLowerCase())
+                .map((name) => name.toLowerCase())
+                .includes(item["Terminal"].toLowerCase())
             : true) &&
           (newfilters["Type"].length
             ? newfilters["Type"].includes(item["Type"])
             : true) &&
           (newfilters.startDate && newfilters.endDate
             ? isWithinRange(
-              item["Date Time"],
-              newfilters.startDate,
-              newfilters.endDate
-            )
+                item["Date Time"],
+                newfilters.startDate,
+                newfilters.endDate
+              )
             : true) // &&
       );
       setFilteredData(sortedFilteredData);
+
+      console.log("Apply Filter");
     }
   };
+
+  const location = useLocation();
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const driver = queryParams.get("driver");
+    const startMonth = queryParams.get("startMonth");
+    const endMonth = queryParams.get("endMonth");
+
+    console.log(queryParams);
+    console.log("Driver:", driver);
+    console.log("Start Month:", startMonth);
+    console.log("End Month:", endMonth);
+
+    console.log(JSON.stringify(Object.fromEntries(queryParams), null, 2));
+
+    if (driver != "undefined") {
+      setnewFilters((prevFilters) => ({
+        ...prevFilters,
+        "Driver Name": [driver],
+      }));
+    }
+    if (startMonth && endMonth) {
+      setnewFilters((prevFilters) => ({
+        ...prevFilters,
+        startDate: new Date(startMonth),
+        endDate: new Date(endMonth),
+      }));
+      setLocationChanged(true);
+    }
+  }, [location]);
+
+  useEffect(() => {
+    if (LocationChanged) {
+      applyFilters();
+    }
+  }, [LocationChanged]);
 
   const handleClear = () => {
     setnewFilters((prevState) => ({
       ...prevState,
       "Driver Name": [],
-      "Terminal": [],
+      Terminal: [],
       Type: [],
       startDate: "",
       endDate: "",
@@ -151,8 +189,6 @@ export default function FilteredTable() {
   }));
 
   let allHomeTerminal = removeDuplicates(homeTerminal);
-
-
 
   console.log(filteredData);
 
@@ -190,12 +226,15 @@ export default function FilteredTable() {
             />
 
             <div className="block">
-              <label className="block text-sm font-medium leading-6 text-gray-900 mb-2" htmlFor="start">
+              <label
+                className="block text-sm font-medium leading-6 text-gray-900 mb-2"
+                htmlFor="start"
+              >
                 Start date:
               </label>
               <DatePicker
                 selected={newfilters.startDate}
-                onChange={date => handleFilterChange(date, "startDate")}
+                onChange={(date) => handleFilterChange(date, "startDate")}
                 isClearable={true}
                 dateFormat="yyyy-MM-dd"
                 className="h-9 m-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 border-none"
@@ -204,19 +243,21 @@ export default function FilteredTable() {
             </div>
 
             <div className="block">
-              <label className="block text-sm font-medium leading-6 text-gray-900 mb-2" htmlFor="end">
+              <label
+                className="block text-sm font-medium leading-6 text-gray-900 mb-2"
+                htmlFor="end"
+              >
                 End date:
               </label>
               <DatePicker
                 selected={newfilters.endDate}
-                onChange={date => handleFilterChange(date, "endDate")}
+                onChange={(date) => handleFilterChange(date, "endDate")}
                 isClearable={true}
                 dateFormat="yyyy-MM-dd"
                 className="h-9 m-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 border-none"
                 placeholderText="Select an end date"
               />
             </div>
-
           </div>
         )}
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex">
@@ -240,27 +281,33 @@ export default function FilteredTable() {
 
       <div className="my-4 flex justify-between px-2 gap-2">
         <div className="flex flex-wrap gap-2 place-content-center ">
-          {newfilters["Driver Name"].map((text, i) => (
-            <Badge
-              key={text}
-              text={text}
-              onClick={() => removeItem(i, "Driver Name")}
-            />
-          ))}
-          {newfilters["Terminal"].map((text, i) => (
-            <Badge
-              key={text}
-              text={text}
-              onClick={() => removeItem(i, "Terminal")}
-            />
-          ))}
-          {newfilters["Type"].map((text, i) => (
-            <Badge
-              key={text}
-              text={text}
-              onClick={() => removeItem(i, "Type")}
-            />
-          ))}
+          {newfilters["Driver Name"]
+            .filter((name) => name)
+            .map((text, i) => (
+              <Badge
+                key={text}
+                text={text}
+                onClick={() => removeItem(i, "Driver Name")}
+              />
+            ))}
+          {newfilters["Terminal"]
+            .filter((name) => name)
+            .map((text, i) => (
+              <Badge
+                key={text}
+                text={text}
+                onClick={() => removeItem(i, "Terminal")}
+              />
+            ))}
+          {newfilters["Type"]
+            .filter((name) => name)
+            .map((text, i) => (
+              <Badge
+                key={text}
+                text={text}
+                onClick={() => removeItem(i, "Type")}
+              />
+            ))}
         </div>
         <p className="w-fit">Total: {filteredData.length}</p>
       </div>
