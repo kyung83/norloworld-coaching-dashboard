@@ -109,7 +109,7 @@ function MainContent() {
                       {userNavigation.map((item) => (
                         <Menu.Item key={item.name}>
                           {({ active }) => (
-                            <Link
+                            <div
                               to={item.href}
                               className={classNames(
                                 active ? "bg-gray-100" : "",
@@ -117,7 +117,7 @@ function MainContent() {
                               )}
                             >
                               {item.name}
-                            </Link>
+                            </div>
                           )}
                         </Menu.Item>
                       ))}
