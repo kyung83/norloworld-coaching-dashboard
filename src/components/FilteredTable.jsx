@@ -67,6 +67,8 @@ export default function FilteredTable() {
     endDate: "",
   });
 
+  
+
   const handleFilterChange = (e, selector) => {
     if (selector === "startDate" || selector === "endDate")
       return setnewFilters((prev) => ({ ...prev, [selector]: e }));
@@ -120,29 +122,26 @@ export default function FilteredTable() {
     const driver = queryParams.get("driver");
     const startMonth = queryParams.get("startMonth");
     const endMonth = queryParams.get("endMonth");
-
-    console.log(queryParams);
-    console.log("Driver:", driver);
-    console.log("Start Month:", startMonth);
-    console.log("End Month:", endMonth);
-
-    console.log(JSON.stringify(Object.fromEntries(queryParams), null, 2));
-
-    if (driver != "undefined") {
-      setnewFilters((prevFilters) => ({
-        ...prevFilters,
-        "Driver Name": [driver],
-      }));
-    }
-    if (startMonth && endMonth) {
-      setnewFilters((prevFilters) => ({
-        ...prevFilters,
-        startDate: new Date(startMonth),
-        endDate: new Date(endMonth),
-      }));
-      setLocationChanged(true);
+    const fromStatsTable = queryParams.get("fromStatsTable"); 
+  
+    if (fromStatsTable) {
+      if (driver !== "undefined") {
+        setnewFilters((prevFilters) => ({
+          ...prevFilters,
+          "Driver Name": [driver],
+        }));
+      }
+      if (startMonth && endMonth) {
+        setnewFilters((prevFilters) => ({
+          ...prevFilters,
+          startDate: new Date(startMonth),
+          endDate: new Date(endMonth),
+        }));
+        setLocationChanged(true);
+      }
     }
   }, [location]);
+  
 
   useEffect(() => {
     if (LocationChanged) {

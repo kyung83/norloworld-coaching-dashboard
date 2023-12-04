@@ -70,7 +70,7 @@ export default function StatsTable() {
     const endOfMonth = endMonth.utc().format("YYYY-MM-DDTHH:mm:ss[Z]");
 
     navigate(
-      `/?driver=${selectedDriver.name}&startMonth=${startOfMonth}&endMonth=${endOfMonth}`
+      `/?driver=${selectedDriver.name}&startMonth=${startOfMonth}&endMonth=${endOfMonth}&fromStatsTable=${true}`
     );
   };
 
