@@ -8,6 +8,7 @@ import Spinner from "./Spinner";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
 import utcPlugin from "dayjs/plugin/utc";
+import ReactDatePicker from "react-datepicker";
 
 dayjs.extend(isBetween);
 dayjs.extend(utcPlugin);
@@ -32,12 +33,17 @@ const validMonths = [
 
 export default function StatsTable() {
   const [{ data, loading, error }] = useAxios(endPoint + "?route=getStats");
+  const years = Array.from({ length: 20 }, (_, i) => ({
+    id: i,
+    name: `${new Date().getFullYear() - i}`,
+  }));
 
   const [filteredData, setFilteredData] = useState(null);
 
   const [selectedDriver, setSelectedDriver] = useState("");
   const [selectedStartMonth, setSelectedStartMonth] = useState("");
   const [selectedEndMonth, setSelectedEndMonth] = useState("");
+  const [selectedYear, setSelectedYear] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   const navigate = useNavigate();
@@ -58,16 +64,28 @@ export default function StatsTable() {
       DECEMBER: 11,
     };
 
+    if (!selectedYear || !selectedYear.name) {
+      setErrorMessage("Please select a year");
+      return;
+    }
+
+    if(!selectedDriver.name){
+      setErrorMessage("Please select a Driver");
+      return;
+    }
+
+    const selectedYearValue = parseInt(selectedYear.name, 10);
+
     const startMonth = selectedStartMonth.name
-      ? dayjs().month(monthNameMap[selectedStartMonth.name]).startOf("month")
-      : dayjs().month(0).startOf("month");
+    ? dayjs(`${selectedYearValue}-${monthNameMap[selectedStartMonth.name] + 1}`).startOf("month")
+    : dayjs(`${selectedYearValue}-01`).startOf("month");
 
-    const endMonth = selectedEndMonth.name
-      ? dayjs().month(monthNameMap[selectedEndMonth.name]).endOf("month")
-      : dayjs().month(11).endOf("month");
+  const endMonth = selectedEndMonth.name
+    ? dayjs(`${selectedYearValue}-${monthNameMap[selectedEndMonth.name] + 1}`).endOf("month")
+    : dayjs(`${selectedYearValue}-12`).endOf("month");
 
-    const startOfMonth = startMonth.utc().format("YYYY-MM-DDTHH:mm:ss[Z]");
-    const endOfMonth = endMonth.utc().format("YYYY-MM-DDTHH:mm:ss[Z]");
+  const startOfMonth = startMonth.utc().format("YYYY-MM-DDTHH:mm:ss[Z]");
+  const endOfMonth = endMonth.utc().format("YYYY-MM-DDTHH:mm:ss[Z]");
 
     navigate(
       `/?driver=${selectedDriver.name}&startMonth=${startOfMonth}&endMonth=${endOfMonth}&fromStatsTable=${true}`
@@ -78,6 +96,13 @@ export default function StatsTable() {
     switch (selector) {
       case "Driver Name":
         setSelectedDriver(selectedValue);
+        setFilters((prev) => ({
+          ...prev,
+          [selector]: selectedValue,
+        }));
+        break;
+      case "Year":
+        setSelectedYear(selectedValue);
         setFilters((prev) => ({
           ...prev,
           [selector]: selectedValue,
@@ -103,80 +128,90 @@ export default function StatsTable() {
   };
 
   const applyFilters = () => {
+    setErrorMessage("");
+    setFilteredData(null);
+
     if (!selectedDriver || !selectedDriver.name) {
       setErrorMessage("You need to select a driver");
       return;
-    } else {
-      setErrorMessage("");
     }
+  
     if (data && data.stats) {
-      const filtered = {};
-
-      let driverName = filters["Driver Name"].name;
-
-      if (data.stats[driverName]) {
-        filtered[driverName] = data.stats[driverName];
+      const driverStats = data.stats[selectedDriver.name];
+      if (!driverStats) {
+        setErrorMessage("No data available for selected driver");
+        return;
       }
-      const startMonth = filters["Start Month"] || { id: 0, name: "JANUARY" };
-      const endMonth = filters["End Month"] || { id: 11, name: "DECEMBER" };
-      if (!selectedStartMonth || !selectedStartMonth.name) {
-        setSelectedStartMonth(startMonth);
+  
+      const yearStats = driverStats[selectedYear.name];
+      if (!yearStats) {
+        setErrorMessage("No data available for selected year");
+        return;
       }
+  
+      const filtered = {
+        [selectedDriver.name]: {
+          [selectedYear.name]: {}
+        }
+      };
+  
 
-      if (!selectedEndMonth || !selectedEndMonth.name) {
-        setSelectedEndMonth(endMonth);
-      }
-
-      console.log(startMonth, endMonth);
-      const filteredMonths = filterByMonthRange(filtered, startMonth, endMonth);
-      setFilteredData(filteredMonths);
+      const startMonthName  = filters["Start Month"].name;
+      const endMonthName  = filters["End Month"].name;
+  
+      const filteredYearData = filterByMonthRange(
+        yearStats,
+        { name: startMonthName }, 
+        { name: endMonthName },
+      );
+  
+      setFilteredData({
+        [selectedDriver.name]: filteredYearData
+      });
+    } else {
+      setErrorMessage("Data not loaded");
     }
   };
+  
 
-  const filterByMonthRange = (data, startMonth, endMonth) => {
+  const filterByMonthRange = (yearData, startMonth, endMonth) => {
     const result = {};
-
+  
     const startMonthIndex = validMonths.indexOf(startMonth.name);
     const endMonthIndex = validMonths.indexOf(endMonth.name);
-
+  
     if (startMonthIndex === -1 || endMonthIndex === -1) {
       return {};
     }
-
-    Object.keys(data).forEach((driverName) => {
-      const monthsData = data[driverName];
-      const filteredData = {};
-
-      Object.keys(monthsData).forEach((month) => {
-        const monthIndex = validMonths.indexOf(month);
-
-        if (monthIndex >= startMonthIndex && monthIndex <= endMonthIndex) {
-          filteredData[month] = monthsData[month];
-        }
-      });
-
-      if (Object.keys(filteredData).length > 0) {
-        result[driverName] = filteredData;
+  
+    Object.keys(yearData).forEach((month) => {
+      const monthIndex = validMonths.indexOf(month);
+  
+      if (monthIndex >= startMonthIndex && monthIndex <= endMonthIndex) {
+        result[month] = yearData[month];
       }
     });
-
+  
     return result;
   };
 
   const handleClear = () => {
     setFilters({
       "Driver Name": "",
+      "Year": "",
       "Start Month": { id: 0, name: "JANUARY" },
       "End Month": { id: 11, name: "DECEMBER" },
     });
     setSelectedDriver("");
     setSelectedStartMonth("");
     setSelectedEndMonth("");
+    setSelectedYear("");
     setFilteredData(null);
   };
 
   const [filters, setFilters] = useState({
     "Driver Name": "",
+    "Year": "",
     "Start Month": { id: 0, name: "JANUARY" },
     "End Month": { id: 11, name: "DECEMBER" },
   });
@@ -186,7 +221,6 @@ export default function StatsTable() {
   }
 
   const hasFilteredData = filteredData && Object.keys(filteredData).length > 0;
-
   const filteredRows = [];
   if (hasFilteredData) {
     Object.entries(filteredData).forEach(([driverName, monthsData]) => {
@@ -246,6 +280,20 @@ export default function StatsTable() {
           <div className="block">
             <label
               className="block text-sm font-medium leading-6 text-gray-900 mb-2"
+              htmlFor="year"
+            >
+              Year:
+            </label>
+            <ComboBox
+              items={years}
+              selectedPerson={selectedYear} 
+              setSelectedPerson={setSelectedYear}
+            />
+          </div>
+
+          <div className="block">
+            <label
+              className="block text-sm font-medium leading-6 text-gray-900 mb-2"
               htmlFor="start"
             >
               Start Month:
@@ -294,6 +342,9 @@ export default function StatsTable() {
         <table className="min-w-full divide-y divide-gray-200 mt-4">
           <thead className="bg-gray-50">
             <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Year
+              </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Month
               </th>
