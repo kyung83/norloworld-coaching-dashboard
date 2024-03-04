@@ -67,8 +67,6 @@ export default function FilteredTable() {
     endDate: "",
   });
 
-  
-
   const handleFilterChange = (e, selector) => {
     if (selector === "startDate" || selector === "endDate")
       return setnewFilters((prev) => ({ ...prev, [selector]: e }));
@@ -122,8 +120,8 @@ export default function FilteredTable() {
     const driver = queryParams.get("driver");
     const startMonth = queryParams.get("startMonth");
     const endMonth = queryParams.get("endMonth");
-    const fromStatsTable = queryParams.get("fromStatsTable"); 
-  
+    const fromStatsTable = queryParams.get("fromStatsTable");
+
     if (fromStatsTable) {
       if (driver !== "undefined") {
         setnewFilters((prevFilters) => ({
@@ -141,7 +139,6 @@ export default function FilteredTable() {
       }
     }
   }, [location]);
-  
 
   useEffect(() => {
     if (LocationChanged) {
@@ -377,6 +374,12 @@ export default function FilteredTable() {
                     >
                       Attachment
                     </th>
+                    <th
+                      scope="col"
+                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    >
+                      Action
+                    </th>
                     {/* <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
                       <span className="sr-only">Edit</span>
                     </th> */}
@@ -434,6 +437,9 @@ export default function FilteredTable() {
                                 )}
                               </>
                             ))}
+                      </td>
+                      <td className="px-3 py-4 text-sm text-gray-500">
+                        {person["ACTION"]}
                       </td>
                       {/* <td className="relative  py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                         <a href="#" className="text-indigo-600 hover:text-indigo-900">
