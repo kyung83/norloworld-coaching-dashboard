@@ -35,7 +35,7 @@ export default function ComboBox({
 
   const filteredPeople = query === ''
     ? removeDuplicates(items)
-    : removeDuplicates(items.filter(person => person.status && person.status.toLowerCase().includes(query.toLowerCase())));
+    : removeDuplicates(items.filter(person => person.name && person.name.toLowerCase().includes(query.toLowerCase())));
 
 
   return (
