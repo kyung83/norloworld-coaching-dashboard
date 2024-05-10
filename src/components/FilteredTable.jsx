@@ -7,6 +7,7 @@ import isBetween from "dayjs/plugin/isBetween";
 import Badge from "./Badge";
 import ComboBoxGroup from "./ComboBoxGroup";
 import ComboBox from "./ComboBox";
+
 import Spinner from "./Spinner";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -25,7 +26,7 @@ const people = [
 ];
 
 const endPoint =
-  "https://script.google.com/macros/s/AKfycbwTHoBwo4RKtAo1Gz3ad0e8ydwUI4TBACO1Wcqnu9FYu_SFHRTVeXJuPHSeRx9o6W_T/exec";
+  "https://script.google.com/macros/s/AKfycbwHdjbA6FEaz_ZVQcT1orzvHG1ASzilvxRX7ooiV7jUqp8b18S8_mL5Uszu9PO9vStw/exec";
 
 const isWithinRange = (fixedDate, startDate, endDate) => {
   const start = dayjs(startDate).startOf("day");
@@ -65,12 +66,14 @@ export default function FilteredTable() {
     Type: [],
     startDate: "",
     endDate: "",
+    status: []
   });
 
   const handleFilterChange = (e, selector) => {
     if (selector === "startDate" || selector === "endDate")
       return setnewFilters((prev) => ({ ...prev, [selector]: e }));
     const { name } = e;
+    console.log(name, selector)
     setFilters((prev) => ({ ...prev, [selector]: name.trim() }));
     setnewFilters((prev) => {
       const existingValues = prev[selector];
@@ -88,28 +91,31 @@ export default function FilteredTable() {
         (item) =>
           (newfilters["Driver Name"].length
             ? newfilters["Driver Name"]
-                .map((name) => name.toLowerCase())
-                .includes(item["Driver Name"].toLowerCase())
+              .map((name) => name.toLowerCase())
+              .includes(item["Driver Name"].toLowerCase())
             : true) &&
           (newfilters["Terminal"].length
             ? newfilters["Terminal"]
-                .map((name) => name.toLowerCase())
-                .includes(item["Terminal"].toLowerCase())
+              .map((name) => name.toLowerCase())
+              .includes(item["Terminal"].toLowerCase())
             : true) &&
           (newfilters["Type"].length
             ? newfilters["Type"].includes(item["Type"])
             : true) &&
           (newfilters.startDate && newfilters.endDate
             ? isWithinRange(
-                item["Date Time"],
-                newfilters.startDate,
-                newfilters.endDate
-              )
-            : true) // &&
+              item["Date Time"],
+              newfilters.startDate,
+              newfilters.endDate
+            )
+            : true) &&
+          (newfilters.status.length
+            ? newfilters["status"]
+              .map((status) => status.toLowerCase())
+              .includes(item.status.toLowerCase())
+            : true)
       );
       setFilteredData(sortedFilteredData);
-
-      console.log("Apply Filter");
     }
   };
 
@@ -154,6 +160,7 @@ export default function FilteredTable() {
       Type: [],
       startDate: "",
       endDate: "",
+      status: []
     }));
     setFilteredData(data);
   };
@@ -179,6 +186,13 @@ export default function FilteredTable() {
     name: driver[0],
   }));
 
+  let driversStatus = dataTypes.drivers.map((driver, i) => ({
+    id: i,
+    name: driver[2]
+  }));
+
+
+
   let homeTerminal = dataTypes.drivers.map((driver, i) => ({
     id: i,
     name: driver[1],
@@ -186,7 +200,6 @@ export default function FilteredTable() {
 
   let allHomeTerminal = removeDuplicates(homeTerminal);
 
-  console.log(filteredData);
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -219,6 +232,13 @@ export default function FilteredTable() {
               }))}
               selectedPerson={filters["Type"]?.name || ""}
               setSelectedPerson={(e) => handleFilterChange(e, "Type")}
+            />
+
+            <ComboBox
+              title="By Status"
+              items={driversStatus}
+              selectedPerson={filters["status"]?.name || ""}
+              setSelectedPerson={(e) => handleFilterChange(e, "status")}
             />
 
             <div className="block">
@@ -304,6 +324,15 @@ export default function FilteredTable() {
                 onClick={() => removeItem(i, "Type")}
               />
             ))}
+          {newfilters["status"]
+            .filter((name) => name)
+            .map((text, i) => (
+              <Badge
+                key={text}
+                text={text}
+                onClick={() => removeItem(i, "status")}
+              />
+            ))}
         </div>
         <p className="w-fit">Total: {filteredData.length}</p>
       </div>
@@ -380,6 +409,12 @@ export default function FilteredTable() {
                     >
                       Action
                     </th>
+                    <th
+                      scope="col"
+                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    >
+                      Status
+                    </th>
                     {/* <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
                       <span className="sr-only">Edit</span>
                     </th> */}
@@ -440,6 +475,9 @@ export default function FilteredTable() {
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500">
                         {person["ACTION"]}
+                      </td>
+                      <td className="px-3 py-4 text-sm text-gray-500">
+                        {person["status"]}
                       </td>
                       {/* <td className="relative  py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                         <a href="#" className="text-indigo-600 hover:text-indigo-900">

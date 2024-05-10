@@ -12,6 +12,19 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
+
+function removeDuplicates(array) {
+  const seen = new Set();
+  return array.filter(person => {
+    if (!person.name || seen.has(person.name)) {
+      return false;
+    }
+    seen.add(person.name);
+    return true;
+  });
+}
+
+
 export default function ComboBox({
   items = peopleMock,
   title,
@@ -20,12 +33,10 @@ export default function ComboBox({
 }) {
   const [query, setQuery] = useState("");
 
-  const filteredPeople =
-    query === ''
-      ? items
-      : items.filter((person) => {
-          return person.name.toLowerCase().includes(query.toLowerCase())
-        })
+  const filteredPeople = query === ''
+    ? removeDuplicates(items)
+    : removeDuplicates(items.filter(person => person.status && person.status.toLowerCase().includes(query.toLowerCase())));
+
 
   return (
     <Combobox
@@ -70,6 +81,7 @@ export default function ComboBox({
                     active ? "bg-indigo-600 text-white" : "text-gray-900"
                   )
                 }
+                
               >
                 {({ active, selected }) => (
                   <>
