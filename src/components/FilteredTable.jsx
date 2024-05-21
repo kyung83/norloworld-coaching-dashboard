@@ -191,8 +191,6 @@ export default function FilteredTable() {
     name: driver[2]
   }));
 
-
-
   let homeTerminal = dataTypes.drivers.map((driver, i) => ({
     id: i,
     name: driver[1],
@@ -206,10 +204,6 @@ export default function FilteredTable() {
       <div className="flex flex-col items-start justify-start md:items-start lg:items-center lg:justify-around">
         {drivers && dataTypes && (
           <div className="sm:flex justify-between w-full">
-            {/* <h1 className="text-base font-semibold leading-6 text-gray-900">Users</h1>
-          <p className="mt-2 text-sm text-gray-700">
-            A list of all the users in your account including their name, title, email and role.
-          </p> */}
             <ComboBox
               title="By Drivers"
               items={drivers}
@@ -277,7 +271,6 @@ export default function FilteredTable() {
           </div>
         )}
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex">
-          {/* <label className="block text-sm font-medium leading-6 text-gray-900 mb-2" htmlFor="start">End date:</label> */}
           <button
             type="button"
             onClick={applyFilters}
@@ -345,113 +338,110 @@ export default function FilteredTable() {
                   <tr>
                     <th
                       scope="col"
-                      className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                      className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 max-w-[200px] truncate"
                     >
                       Driver Name
                     </th>
                     <th
                       scope="col"
-                      className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                      className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 max-w-[300px] truncate"
                     >
                       Terminal
                     </th>
                     <th
                       scope="col"
-                      className="whitespace-nowrap px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      className="whitespace-nowrap px-3 py-3.5 text-left text-sm font-semibold text-gray-900 max-w-[150px] truncate"
                     >
                       Date Time
                     </th>
                     <th
                       scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 max-w-[200px] truncate"
+                      title="Incident" // Tooltip
                     >
                       Incident
                     </th>
                     <th
                       scope="col"
-                      className="whitespace-nowrap px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      className="whitespace-nowrap px-3 py-3.5 text-left text-sm font-semibold text-gray-900 max-w-[150px] truncate"
                     >
                       Documented by
                     </th>
                     <th
                       scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 max-w-[150px] truncate"
                     >
                       Type
                     </th>
                     <th
                       scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 max-w-[150px] truncate"
                     >
                       AMOUNT $ TICKET OR DAMAGE
                     </th>
                     <th
                       scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 max-w-[200px] truncate"
                     >
                       CSA BASIC Category & Group Description
                     </th>
                     <th
                       scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 max-w-[100px] truncate"
                     >
                       CSA Points
                     </th>
                     <th
                       scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 max-w-[150px] truncate"
                     >
                       Attachment
                     </th>
                     <th
                       scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 max-w-[150px] truncate"
                     >
                       Action
                     </th>
                     <th
                       scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 max-w-[100px] truncate"
                     >
                       Status
                     </th>
-                    {/* <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                      <span className="sr-only">Edit</span>
-                    </th> */}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
                   {filteredData.map((person) => (
                     <tr key={uuidv4()}>
-                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 max-w-[200px] truncate">
                         {person["Driver Name"]}
                       </td>
-                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 max-w-[100px] truncate">
                         {person["Terminal"]}
                       </td>
-                      {/* <td className=" px-3 py-4 text-sm text-gray-500">{person['Driver Name']}</td> */}
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 max-w-[150px] truncate">
                         {person["Date Time"]}
                       </td>
-                      <td className="px-3 py-4 text-sm text-gray-500">
+                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[200px] truncate" title={person["Incident"]}>
                         {person["Incident"]}
                       </td>
-                      <td className="px-3 py-4 text-sm text-gray-500">
+                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[150px] truncate">
                         {person["Documented By"]}
                       </td>
-                      <td className="px-3 py-4 text-sm text-gray-500">
+                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[150px] truncate">
                         {person["Type"]}
                       </td>
-                      <td className="px-3 py-4 text-sm text-gray-500">
+                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[150px] truncate">
                         {person["AMOUNT $ TICKET OR DAMAGE"]}
                       </td>
-                      <td className="px-3 py-4 text-sm text-gray-500">
+                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[200px] truncate">
                         {person["CSA BASIC Category & Group Description"]}
                       </td>
-                      <td className="px-3 py-4 text-sm text-gray-500">
+                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[100px] truncate">
                         {person["CSA Points"]}
                       </td>
-                      <td className="px-3 py-4 text-sm text-gray-500">
+                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[150px] truncate">
                         {person["ATTACHMENT"] &&
                           person["ATTACHMENT"]
                             .split("\n")
@@ -473,17 +463,12 @@ export default function FilteredTable() {
                               </>
                             ))}
                       </td>
-                      <td className="px-3 py-4 text-sm text-gray-500">
+                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[150px] truncate">
                         {person["ACTION"]}
                       </td>
-                      <td className="px-3 py-4 text-sm text-gray-500">
+                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[100px] truncate">
                         {person["status"]}
                       </td>
-                      {/* <td className="relative  py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                        <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                          Edit<span className="sr-only">, {person.name}</span>
-                        </a>
-                      </td> */}
                     </tr>
                   ))}
                 </tbody>
