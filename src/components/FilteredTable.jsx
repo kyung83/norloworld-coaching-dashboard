@@ -351,6 +351,7 @@ export default function FilteredTable() {
                     <th
                       scope="col"
                       className="whitespace-nowrap px-3 py-3.5 text-left text-sm font-semibold text-gray-900 max-w-[150px] truncate"
+                      title="Date Time"
                     >
                       Date Time
                     </th>
@@ -420,10 +421,10 @@ export default function FilteredTable() {
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 max-w-[100px] truncate">
                         {person["Terminal"]}
                       </td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 max-w-[150px] truncate">
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 max-w-[150px] truncate" title={person["Date Time"]}>
                         {person["Date Time"]}
                       </td>
-                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[200px] truncate" title={person["Incident"]}>
+                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[200px]" title={person["Incident"]}>
                         {person["Incident"]}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500 max-w-[150px] truncate">
