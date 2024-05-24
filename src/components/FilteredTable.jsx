@@ -415,34 +415,34 @@ export default function FilteredTable() {
                 <tbody className="divide-y divide-gray-200 bg-white">
                   {filteredData.map((person) => (
                     <tr key={uuidv4()}>
-                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 max-w-[200px] truncate">
+                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 max-w-[200px] ">
                         {person["Driver Name"]}
                       </td>
-                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 max-w-[100px] truncate">
+                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 max-w-[100px] ">
                         {person["Terminal"]}
                       </td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 max-w-[150px] truncate" title={person["Date Time"]}>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 max-w-[150px] " title={person["Date Time"]}>
                         {person["Date Time"]}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500 max-w-[200px]" title={person["Incident"]}>
                         {person["Incident"]}
                       </td>
-                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[150px] truncate">
+                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[150px] ">
                         {person["Documented By"]}
                       </td>
-                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[150px] truncate">
+                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[150px] ">
                         {person["Type"]}
                       </td>
-                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[150px] truncate">
+                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[150px] ">
                         {person["AMOUNT $ TICKET OR DAMAGE"]}
                       </td>
-                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[200px] truncate">
+                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[200px] ">
                         {person["CSA BASIC Category & Group Description"]}
                       </td>
-                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[100px] truncate">
+                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[100px] ">
                         {person["CSA Points"]}
                       </td>
-                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[150px] truncate">
+                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[150px] ">
                         {person["ATTACHMENT"] &&
                           person["ATTACHMENT"]
                             .split("\n")
@@ -464,10 +464,10 @@ export default function FilteredTable() {
                               </>
                             ))}
                       </td>
-                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[150px] truncate">
+                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[150px] ">
                         {person["ACTION"]}
                       </td>
-                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[100px] truncate">
+                      <td className="px-3 py-4 text-sm text-gray-500 max-w-[100px] ">
                         {person["status"]}
                       </td>
                     </tr>
